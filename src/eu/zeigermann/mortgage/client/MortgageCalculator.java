@@ -1,5 +1,6 @@
 package eu.zeigermann.mortgage.client;
 
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.i18n.client.NumberFormat;
 
 public class MortgageCalculator {
@@ -13,22 +14,34 @@ public class MortgageCalculator {
 	public final static class MortgageResult {
 
 		public String principle;
-		public String total;
 		public String payments;
 		public String monthly;
+		public String total;
 
-		public String stringify() {
-			return "{\"principle\": \"" + principle + "\", \"total\": \"" + total
-					+ "\", \"payments\": \"" + payments + "\", \"monthly\": \"" + monthly
-					+ "\"}";
+	}
+
+	public final static class MortgageJSResult extends JavaScriptObject {
+		protected MortgageJSResult() {
+
 		}
+
+		public static native MortgageJSResult create(String principle,
+				String payments, String monthly, String total) /*-{
+	        return {
+	            principle: principle,
+	            total: total,
+	            payments: payments,
+	            monthly: monthly
+	        };
+		}-*/;
 	}
-	
-	public String calculateMortgageStringify(double price, double down,
+
+	public MortgageJSResult calculateMortgageJsni(double price, double down,
 			double interest, double term) {
-		return calculateMortgage(price, down, interest, term).stringify();
+		MortgageResult result = calculateMortgage(price, down, interest, term);
+		return MortgageJSResult.create(result.principle, result.payments, result.monthly, result.total);
 	}
-	
+
 	public MortgageResult calculateMortgage(double price, double down,
 			double interest, double term) {
 		MortgageResult result = new MortgageResult();
@@ -38,10 +51,10 @@ public class MortgageCalculator {
 		double monthly = principle * monthylyInterestRate
 				/ (1 - Math.pow(1 + monthylyInterestRate, (-1 * payments)));
 		double roundedMonthly = Math.round(monthly * 100.0) / 100.0;
-		result.total = formatAsMoney(roundedMonthly * payments);
 		result.principle = formatAsMoney(principle);
-		result.monthly = formatAsMoney(roundedMonthly);
 		result.payments = Integer.toString((int) payments);
+		result.monthly = formatAsMoney(roundedMonthly);
+		result.total = formatAsMoney(roundedMonthly * payments);
 		return result;
 	}
 

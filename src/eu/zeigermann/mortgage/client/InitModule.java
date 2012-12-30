@@ -11,7 +11,7 @@ public class InitModule implements EntryPoint {
 	}
 	
 	private native void publish(MortgageCalculator mortgageCalculator) /*-{
-		$wnd.gwtCalculateMortgage = $entry(mortgageCalculator.@eu.zeigermann.mortgage.client.MortgageCalculator::calculateMortgageStringify(DDDD));
+		$wnd.gwtCalculateMortgage = $entry(mortgageCalculator.@eu.zeigermann.mortgage.client.MortgageCalculator::calculateMortgageJsni(DDDD));
 	}-*/;
-	
+
 }

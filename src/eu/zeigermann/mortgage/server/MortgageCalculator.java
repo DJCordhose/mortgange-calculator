@@ -26,6 +26,13 @@ public class MortgageCalculator {
 		public String formatMonthly() {
 			return monthly.setScale(2, RoundingMode.HALF_EVEN).toPlainString();
 		}
+		
+		public String stringify() {
+			return "{\"principle\": \"" + formatPrinciple() + "\", \"total\": \"" + formatTotal()
+					+ "\", \"payments\": \"" + formatPayments() + "\", \"monthly\": \"" + formatMonthly()
+					+ "\"}";
+		}
+
 	}
 
 	public final static class MortgageData {
