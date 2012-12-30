@@ -55,9 +55,10 @@ public class MortgageCalculator {
 						BigDecimal.valueOf(1).divide(
 								BigDecimal.valueOf(1).add(monthylyInterestRate)
 										.pow(payments), mc)), mc);
-		result.total = monthly.multiply(BigDecimal.valueOf(payments));
+		BigDecimal roundedMonthly = monthly.setScale(2, RoundingMode.HALF_EVEN);
+		result.total = roundedMonthly.multiply(BigDecimal.valueOf(payments));
 		result.principle = principle;
-		result.monthly = monthly;
+		result.monthly = roundedMonthly;
 		result.payments = BigDecimal.valueOf(payments);
 		return result;
 	}

@@ -29,7 +29,9 @@ public class MorgageRestEndpoint extends HttpServlet {
 			data.interest = new BigDecimal(parameters.get(2));
 			data.term = new BigDecimal(parameters.get(3));
 			MortgageResult result = mortgageCalculator.calculateMortgage(data);
-			
+			resp.getWriter().write(result.stringify());
+		} else {
+			resp.getWriter().write("Error");
 		}
 	}
 
