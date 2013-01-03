@@ -5,7 +5,7 @@ var CalculatorModule = angular.module('CalculatorModule', []).
         return new Calculator();
     });
 
-var MortgageApp = angular.module('MortgageApp', ['CalculatorModule']);
+var MortgageApp = angular.module('MortgageApp', ['CalculatorModule', 'restclient']);
 
 MortgageApp.directive('tooltip', function () {
     return function (scope, element, attrs) {
@@ -18,10 +18,13 @@ MortgageApp.directive('tooltip', function () {
     };
 });
 
-function MortgageCtrl($scope, Calculator) {
+function MortgageCtrl($scope , Calculator , RestCalculator) {
 
     $scope.calc = function(price, down, interest, term) {
         $scope.mortgage = Calculator.calculateMortgage(price, down, interest, term);
+//        RestCalculator.get({price: price, down: down, interest: interest, term: term}, function(result) {
+//            $scope.mortgage = result;
+//        });
     };
 
 }

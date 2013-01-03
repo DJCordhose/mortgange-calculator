@@ -9,8 +9,7 @@ var Calculator = (function() {
     }
 
     Calculator.prototype.calculateMortgage = function(price, down, interest, term) {
-        var result = gwtCalculateMortgage(price, down, interest, term);
-        return result;
+        return gwtCalculateMortgage(price, down, interest, term);
     }
 
     return Calculator;
