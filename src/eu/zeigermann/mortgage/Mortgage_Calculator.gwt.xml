@@ -18,5 +18,5 @@
   <source path='client'/>
   <source path='shared'/>
 
-	<set-property name="user.agent" value="safari"/>
+  <inherits name="eu.zeigermann.mortgage.Safari_en"/>
 </module>

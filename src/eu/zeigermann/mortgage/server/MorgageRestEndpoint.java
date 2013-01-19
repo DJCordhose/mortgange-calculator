@@ -33,6 +33,10 @@ public class MorgageRestEndpoint extends HttpServlet {
 		} else {
 			resp.getWriter().write("Error");
 		}
+		// allow for cross site origin
+		resp.setHeader("Access-Control-Allow-Origin", "*");
+		resp.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+		resp.setHeader("Access-Control-Allow-Headers", "X-REQUESTED-WITH");
 	}
 
 	private List<String> getParameters(HttpServletRequest req) {
