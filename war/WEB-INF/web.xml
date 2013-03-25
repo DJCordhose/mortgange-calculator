@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee                http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
   <!-- Servlets -->
+	<servlet>
+		<servlet-name>CustomerRestEndpoint</servlet-name>
+		<servlet-class>eu.zeigermann.mortgage.server.customer.CustomerRestEndpoint</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CustomerRestEndpoint</servlet-name>
+		<url-pattern>/customer/*</url-pattern>
+	</servlet-mapping>
+	
   <servlet>
     <servlet-name>rest</servlet-name>
     <servlet-class>eu.zeigermann.mortgage.server.MorgageRestEndpoint</servlet-class>
@@ -24,5 +33,29 @@
     <servlet-name>SystemServiceServlet</servlet-name>
     <url-pattern>/_ah/spi/*</url-pattern>
   </servlet-mapping>
+
+<security-constraint>
+   <web-resource-collection>
+      <web-resource-name>Calculator</web-resource-name>
+      <url-pattern>/mortgage_calculator/rs*</url-pattern>
+      <http-method>HEAD</http-method>
+      <http-method>OPTIONS</http-method>
+      <http-method>GET</http-method>
+   </web-resource-collection>
+   <web-resource-collection>
+      <web-resource-name>Service</web-resource-name>
+      <url-pattern>/customer*</url-pattern>
+      <http-method>DELETE</http-method>
+      <http-method>PUT</http-method>
+      <http-method>HEAD</http-method>
+      <http-method>OPTIONS</http-method>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
+   </web-resource-collection>
+   <auth-constraint/>
+   <user-data-constraint>
+      <transport-guarantee>NONE</transport-guarantee>
+   </user-data-constraint>
+</security-constraint>
 
 </web-app>
