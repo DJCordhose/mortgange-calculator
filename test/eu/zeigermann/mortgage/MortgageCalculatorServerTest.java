@@ -8,16 +8,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.zeigermann.mortgage.server.MortgageCalculator;
-import eu.zeigermann.mortgage.server.MortgageCalculator.MortgageData;
+import eu.zeigermann.mortgage.server.MortgageData;
+import eu.zeigermann.mortgage.server.MortgageResult;
 
 public class MortgageCalculatorServerTest {
 
 	MortgageCalculator calculator;
-	MortgageCalculator.MortgageResult result;
+	MortgageResult result;
 	@Before
 	public void initialize() {
 		calculator = new MortgageCalculator();
-		MortgageData data = new MortgageCalculator.MortgageData();
+		MortgageData data = new MortgageData();
 		data.down = BigDecimal.valueOf(10);
 		data.interest = BigDecimal.valueOf(7.5);
 		data.term = BigDecimal.valueOf(30);

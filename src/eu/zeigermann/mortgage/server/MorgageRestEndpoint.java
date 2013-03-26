@@ -11,8 +11,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import eu.zeigermann.mortgage.server.MortgageCalculator.MortgageData;
-import eu.zeigermann.mortgage.server.MortgageCalculator.MortgageResult;
 
 @SuppressWarnings("serial")
 public class MorgageRestEndpoint extends HttpServlet {
@@ -23,7 +21,7 @@ public class MorgageRestEndpoint extends HttpServlet {
 		List<String> parameters = getParameters(req);
 		if (parameters.size() == 4) {
 			MortgageCalculator mortgageCalculator = new MortgageCalculator();
-			MortgageData data = new MortgageCalculator.MortgageData();
+			MortgageData data = new MortgageData();
 			data.price = new BigDecimal(parameters.get(0));
 			data.down = new BigDecimal(parameters.get(1));
 			data.interest = new BigDecimal(parameters.get(2));
