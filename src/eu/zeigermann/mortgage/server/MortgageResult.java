@@ -1,9 +1,11 @@
 package eu.zeigermann.mortgage.server;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public final class MortgageResult {
+@SuppressWarnings("serial")
+public final class MortgageResult implements Serializable {
 	public BigDecimal principle;
 	public BigDecimal total;
 	public BigDecimal payments;

@@ -1,8 +1,10 @@
 package eu.zeigermann.mortgage.server;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public final class MortgageData {
+@SuppressWarnings("serial")
+public final class MortgageData implements Serializable {
 	public String name;
 	public BigDecimal price;
 	public BigDecimal down;
