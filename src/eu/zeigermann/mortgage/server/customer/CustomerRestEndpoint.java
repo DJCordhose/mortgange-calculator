@@ -2,7 +2,6 @@ package eu.zeigermann.mortgage.server.customer;
 
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -12,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+
+import eu.zeigermann.mortgage.server.Result;
 
 @SuppressWarnings("serial")
 public class CustomerRestEndpoint extends HttpServlet {
@@ -42,11 +43,19 @@ public class CustomerRestEndpoint extends HttpServlet {
 		Gson gson = new Gson();
 		Customer customer = gson.fromJson(req.getReader(), Customer.class);
 		if (customer.id == -1) {
-			sendError(resp);
+			sendError(req, resp);
 		} else {
 			customerService.save(customer);
-			sendSuccess(resp);
+			sendSuccess(req, resp);
 		}
+	}
+	
+	private void sendError(HttpServletRequest req, HttpServletResponse resp) {
+		sendResponse(req, resp, null, false);
+	}
+
+	private void sendSuccess(HttpServletRequest req, HttpServletResponse resp) {
+		sendResponse(req, resp, null, true);
 	}
 	
 	@Override
@@ -55,26 +64,11 @@ public class CustomerRestEndpoint extends HttpServlet {
 		logger.info("Performing DELETE");
 		Customer customer = parseCustomer(req);
 		if (customer.id == -1) {
-			sendError(resp);
+			sendError(req, resp);
 		} else {
 			customerService.delete(customer);
-			sendSuccess(resp);
+			sendSuccess(req, resp);
 		}
-	}
-
-	private void sendSuccess(HttpServletResponse resp) throws IOException {
-		completeCall(resp, "Success");
-	}
-
-	private void sendError(HttpServletResponse resp) throws IOException {
-		completeCall(resp, "Error");
-	}
-
-
-	private void completeCall(HttpServletResponse resp, String response) throws IOException {
-		logger.info("Writing back: " + response);
-		resp.getWriter().write(response);
-		setCORSHeaders(resp);
 	}
 
 	@Override
@@ -83,9 +77,24 @@ public class CustomerRestEndpoint extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		logger.info("Performing GET");
-		Collection<Customer> customers = customerService.getAll();
+		Customer customer = parseCustomer(req);
+		Object payload;
+		if (customer.id == -1) {
+			payload = customerService.getAll();
+		} else {
+			payload = customerService.get(customer.id);
+		}
+		sendResponse(req, resp, payload);
+	}
+
+	private void sendResponse(HttpServletRequest req, HttpServletResponse resp,
+			Object payload) {
+		sendResponse(req, resp, payload, true);
+	}
+	private void sendResponse(HttpServletRequest req, HttpServletResponse resp,
+			Object payload, boolean success) {
 		String callback = req.getParameter("callback");
-		passResult(resp, customers, callback);
+		passResult(resp, payload, callback, success);
 		if (callback == null) {
 			setCORSHeaders(resp);
 		} else {
@@ -140,9 +149,16 @@ public class CustomerRestEndpoint extends HttpServlet {
 		return customer;
 	}
 
-	private void passResult(HttpServletResponse resp, Object result,
+	private <T> void passResult(HttpServletResponse resp, Object payload,
 			String callback) {
+		passResult(resp, payload, callback, true);
+	}
+	private <T> void passResult(HttpServletResponse resp, Object payload,
+			String callback, boolean success) {
 		try {
+			Result<Object> result = new Result<Object>();
+			result.payload = payload;
+			result.success = success;
 			String json = mapper.writeValueAsString(result);
 			if (callback != null) {
 				json = callback+"(" + json + ");";

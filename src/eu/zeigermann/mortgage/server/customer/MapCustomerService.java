@@ -25,4 +25,9 @@ public class MapCustomerService implements CustomerService {
 	public void delete(Customer customer) {
 		customers.remove(customer.id);
 	}
+
+	@Override
+	public Customer get(int id) {
+		return customers.get(id);
+	}
 }

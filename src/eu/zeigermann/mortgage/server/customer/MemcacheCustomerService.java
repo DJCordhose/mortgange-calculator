@@ -21,6 +21,13 @@ public class MemcacheCustomerService implements CustomerService {
 		return getCustomerMap().values();
 	}
 	
+
+	@Override
+	public Customer get(int id) {
+		Map<Integer, Customer> customerMap = getCustomerMap();
+		return customerMap.get(id);
+	}
+	
 	@Override
 	public synchronized void save(Customer customer) {
 		Map<Integer, Customer> customerMap = getCustomerMap();

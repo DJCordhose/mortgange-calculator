@@ -8,7 +8,7 @@ import eu.zeigermann.mortgage.server.MortgageData;
 
 @SuppressWarnings("serial")
 public class Customer implements Serializable {
-	public int id;
+	public int id = -1;
 	public String name;
 	public List<MortgageData> mortgages = new ArrayList<MortgageData>();
 	
