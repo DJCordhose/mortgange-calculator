@@ -21,7 +21,7 @@ public class GenericMapServiceImpl<T extends HasId> implements GenericDataServic
 	
 	@Override
 	public T save(T object) {
-		if (object.getId() == -1) {
+		if (object.getId() == -1 || object.getId() == 0) {
 			object.setId(globalId++);
 		}
 		data.put(object.getId(), object);

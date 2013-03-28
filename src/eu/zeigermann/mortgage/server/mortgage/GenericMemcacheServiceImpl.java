@@ -38,7 +38,7 @@ public class GenericMemcacheServiceImpl<T extends HasId> implements GenericDataS
 	@Override
 	public synchronized T save(T object) {
 		Map<Integer, T> map = getMap();
-		if (object.getId() == -1) {
+		if (object.getId() == -1 || object.getId() == 0) {
 			object.setId(nextCnt());
 		}
 		map.put(object.getId(), object);
