@@ -8,7 +8,6 @@ import eu.zeigermann.mortgage.server.mortgage.HasId;
 @SuppressWarnings("serial")
 public final class MortgageData implements HasId, Serializable {
 	public int id = -1;
-	public int customerId = -1;
 	public String name;
 	public BigDecimal price;
 	public BigDecimal down;

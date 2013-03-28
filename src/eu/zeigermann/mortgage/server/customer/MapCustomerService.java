@@ -33,9 +33,4 @@ public class MapCustomerService implements CustomerService {
 		return customers.get(id);
 	}
 
-	@Override
-	public void save(MortgageData mortgage) {
-		Customer customer = get(mortgage.customerId);
-		customer.mortgages.add(mortgage);
-	}
 }

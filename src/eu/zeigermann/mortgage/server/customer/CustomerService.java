@@ -12,8 +12,6 @@ public interface CustomerService {
 
 	public void save(Customer customer);
 
-	public void save(MortgageData mortgage);
-	
 	public void delete(Customer customer);
 
 }

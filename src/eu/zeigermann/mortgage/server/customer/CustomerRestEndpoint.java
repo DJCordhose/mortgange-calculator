@@ -41,8 +41,6 @@ public class CustomerRestEndpoint extends HttpServlet {
 
 	private void doSave(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		String type = getType(req);
-		if (type.equalsIgnoreCase("customer")) {
 			Gson gson = new Gson();
 			Customer customer = gson.fromJson(req.getReader(), Customer.class);
 			if (customer.id == -1) {
@@ -51,16 +49,6 @@ public class CustomerRestEndpoint extends HttpServlet {
 				customerService.save(customer);
 				sendSuccess(req, resp);
 			}
-		} else if (type.equalsIgnoreCase("mortgage")) {
-			Gson gson = new Gson();
-			MortgageData mortgage = gson.fromJson(req.getReader(), MortgageData.class);
-			if (mortgage.id == -1) {
-				sendError(req, resp);
-			} else {
-				customerService.save(mortgage);
-				sendSuccess(req, resp);
-			}
-		}
 	}
 
 	private void sendError(HttpServletRequest req, HttpServletResponse resp) {
@@ -139,26 +127,6 @@ public class CustomerRestEndpoint extends HttpServlet {
 		resp.setHeader("Content-Type", "text/javascript");
 		resp.setHeader("Cache-Control", "no-cache");
 		resp.setHeader("Pragma", "no-cache");
-	}
-
-	private String getType(HttpServletRequest req) {
-		final String pathInfo = req.getPathInfo();
-		if (pathInfo == null || pathInfo.length() == 0) {
-			return "customer";
-		}
-		String parameterString = pathInfo;
-		if (parameterString.startsWith("/")) {
-			parameterString = parameterString.substring(1);
-		}
-		logger.info("Parsing incoming string: " + parameterString);
-		String[] split = parameterString.split("/");
-		if (split.length == 0) {
-			return "customer";
-		}
-		if (split[0].equalsIgnoreCase("mortgage")) {
-			return "mortgage";
-		}
-		return "customer";
 	}
 
 	private Customer parseCustomer(HttpServletRequest req) {

@@ -56,12 +56,4 @@ public class MemcacheCustomerService implements CustomerService {
 	private synchronized void putCustomerMap(Map<Integer, Customer> customerMap) {
 			memcacheService.put(CUSTOMER, customerMap);
 	}
-
-
-	@Override
-	public void save(MortgageData mortgage) {
-		Customer customer = get(mortgage.customerId);
-		customer.mortgages.add(mortgage);
-		save(customer);
-	}
 }
