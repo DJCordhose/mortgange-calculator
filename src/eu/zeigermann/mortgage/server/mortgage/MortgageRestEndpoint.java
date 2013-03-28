@@ -41,14 +41,11 @@ public class MortgageRestEndpoint extends HttpServlet {
 
 	private void doSave(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-			Gson gson = new Gson();
-			MortgageData mortgage = gson.fromJson(req.getReader(), MortgageData.class);
-			if (mortgage.id == -1) {
-				sendError(req, resp);
-			} else {
-				customerService.save(mortgage);
-				sendSuccess(req, resp);
-			}
+		Gson gson = new Gson();
+		MortgageData mortgage = gson.fromJson(req.getReader(),
+				MortgageData.class);
+		MortgageData saved = customerService.save(mortgage);
+		sendResponse(req, resp, saved, true);
 	}
 
 	private void sendError(HttpServletRequest req, HttpServletResponse resp) {
@@ -127,26 +124,6 @@ public class MortgageRestEndpoint extends HttpServlet {
 		resp.setHeader("Content-Type", "text/javascript");
 		resp.setHeader("Cache-Control", "no-cache");
 		resp.setHeader("Pragma", "no-cache");
-	}
-
-	private String getType(HttpServletRequest req) {
-		final String pathInfo = req.getPathInfo();
-		if (pathInfo == null || pathInfo.length() == 0) {
-			return "customer";
-		}
-		String parameterString = pathInfo;
-		if (parameterString.startsWith("/")) {
-			parameterString = parameterString.substring(1);
-		}
-		logger.info("Parsing incoming string: " + parameterString);
-		String[] split = parameterString.split("/");
-		if (split.length == 0) {
-			return "customer";
-		}
-		if (split[0].equalsIgnoreCase("mortgage")) {
-			return "mortgage";
-		}
-		return "customer";
 	}
 
 	private int parseId(HttpServletRequest req) {

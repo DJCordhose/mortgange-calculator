@@ -8,7 +8,7 @@ public interface GenericDataService<T extends HasId> {
 	
 	public Collection<T> getAll();
 
-	public void save(T mortgage);
+	public T save(T mortgage);
 	
 	public void delete(int id);
 

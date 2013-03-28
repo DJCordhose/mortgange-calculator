@@ -12,15 +12,20 @@ import eu.zeigermann.mortgage.server.MortgageData;
 @SuppressWarnings("all")
 public class GenericMapServiceImpl<T extends HasId> implements GenericDataService<T> {
 	private final Map<Integer, T> data = new ConcurrentHashMap<Integer, T>();
-
+	private int globalId = 1;
+	
 	@Override
 	public Collection<T> getAll() {
 		return data.values();
 	}
 	
 	@Override
-	public void save(T object) {
+	public T save(T object) {
+		if (object.getId() == -1) {
+			object.setId(globalId++);
+		}
 		data.put(object.getId(), object);
+		return object;
 	}
 	
 	@Override

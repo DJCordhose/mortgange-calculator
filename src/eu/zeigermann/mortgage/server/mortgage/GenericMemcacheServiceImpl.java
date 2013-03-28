@@ -16,6 +16,7 @@ import static com.google.appengine.api.memcache.MemcacheServiceFactory.*;
 @SuppressWarnings("all")
 public class GenericMemcacheServiceImpl<T extends HasId> implements GenericDataService<T> {
 	private final String name;
+	private final String globalIdCntName = "globalId";
 	private final MemcacheService memcacheService = getMemcacheService();
 
 	public GenericMemcacheServiceImpl(String name) {
@@ -35,10 +36,14 @@ public class GenericMemcacheServiceImpl<T extends HasId> implements GenericDataS
 	}
 	
 	@Override
-	public synchronized void save(T object) {
+	public synchronized T save(T object) {
 		Map<Integer, T> map = getMap();
+		if (object.getId() == -1) {
+			object.setId(nextCnt());
+		}
 		map.put(object.getId(), object);
 		putMap(map);
+		return object;
 	}
 	
 	@Override
@@ -60,5 +65,16 @@ public class GenericMemcacheServiceImpl<T extends HasId> implements GenericDataS
 	private synchronized void putMap(Map<Integer, T> map) {
 			memcacheService.put(name, map);
 	}
+
+	private synchronized int nextCnt() {
+		Integer cnt = (Integer) memcacheService.get(globalIdCntName);
+		if (cnt == null) {
+			cnt = 0;
+		}
+		cnt++;
+		memcacheService.put(name, cnt);
+		return cnt;
+	}
+	
 
 }

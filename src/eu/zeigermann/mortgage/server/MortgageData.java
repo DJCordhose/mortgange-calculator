@@ -13,8 +13,14 @@ public final class MortgageData implements HasId, Serializable {
 	public BigDecimal down;
 	public BigDecimal interest;
 	public BigDecimal term;
+
 	@Override
 	public int getId() {
 		return id;
+	}
+
+	@Override
+	public void setId(int id) {
+		this.id = id;
 	}
 }
