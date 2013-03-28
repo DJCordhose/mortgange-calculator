@@ -1,6 +1,5 @@
 package eu.zeigermann.mortgage.server.customer;
 
-
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -12,15 +11,17 @@ import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
+import eu.zeigermann.mortgage.server.MortgageData;
 import eu.zeigermann.mortgage.server.Result;
 
 @SuppressWarnings("serial")
 public class CustomerRestEndpoint extends HttpServlet {
-	
-	private Logger logger = Logger.getLogger(CustomerRestEndpoint.class.getName());
 
-//	private CustomerService customerService = new MapCustomerService(); 
-	private CustomerService customerService = new MemcacheCustomerService(); 
+	private Logger logger = Logger.getLogger(CustomerRestEndpoint.class
+			.getName());
+
+	private CustomerService customerService = new MapCustomerService();
+	// private CustomerService customerService = new MemcacheCustomerService();
 
 	private ObjectMapper mapper = new ObjectMapper();
 
@@ -30,26 +31,38 @@ public class CustomerRestEndpoint extends HttpServlet {
 		logger.info("Performing POST");
 		doSave(req, resp);
 	}
-	
+
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		logger.info("Performing PUT");
 		doSave(req, resp);
 	}
-	
+
 	private void doSave(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		Gson gson = new Gson();
-		Customer customer = gson.fromJson(req.getReader(), Customer.class);
-		if (customer.id == -1) {
-			sendError(req, resp);
-		} else {
-			customerService.save(customer);
-			sendSuccess(req, resp);
+		String type = getType(req);
+		if (type.equalsIgnoreCase("customer")) {
+			Gson gson = new Gson();
+			Customer customer = gson.fromJson(req.getReader(), Customer.class);
+			if (customer.id == -1) {
+				sendError(req, resp);
+			} else {
+				customerService.save(customer);
+				sendSuccess(req, resp);
+			}
+		} else if (type.equalsIgnoreCase("mortgage")) {
+			Gson gson = new Gson();
+			MortgageData mortgage = gson.fromJson(req.getReader(), MortgageData.class);
+			if (mortgage.id == -1) {
+				sendError(req, resp);
+			} else {
+				customerService.save(mortgage);
+				sendSuccess(req, resp);
+			}
 		}
 	}
-	
+
 	private void sendError(HttpServletRequest req, HttpServletResponse resp) {
 		sendResponse(req, resp, null, false);
 	}
@@ -57,7 +70,7 @@ public class CustomerRestEndpoint extends HttpServlet {
 	private void sendSuccess(HttpServletRequest req, HttpServletResponse resp) {
 		sendResponse(req, resp, null, true);
 	}
-	
+
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -73,7 +86,7 @@ public class CustomerRestEndpoint extends HttpServlet {
 
 	@Override
 	// does both REST / CORS calls as well as jsonp
-	//http://devlog.info/2010/03/10/cross-domain-ajax/
+	// http://devlog.info/2010/03/10/cross-domain-ajax/
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		logger.info("Performing GET");
@@ -91,6 +104,7 @@ public class CustomerRestEndpoint extends HttpServlet {
 			Object payload) {
 		sendResponse(req, resp, payload, true);
 	}
+
 	private void sendResponse(HttpServletRequest req, HttpServletResponse resp,
 			Object payload, boolean success) {
 		String callback = req.getParameter("callback");
@@ -101,7 +115,7 @@ public class CustomerRestEndpoint extends HttpServlet {
 			setJsonpHeaders(resp);
 		}
 	}
-	
+
 	@Override
 	protected void doOptions(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -115,14 +129,36 @@ public class CustomerRestEndpoint extends HttpServlet {
 	private void setCORSHeaders(HttpServletResponse resp) {
 		// allow for cross site origin
 		resp.setHeader("Access-Control-Allow-Origin", "*");
-		resp.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
-		resp.setHeader("Access-Control-Allow-Headers", "ACCEPT, ORIGIN, X-REQUESTED-WITH, CONTENT-TYPE");
+		resp.setHeader("Access-Control-Allow-Methods",
+				"POST, GET, PUT, DELETE, OPTIONS");
+		resp.setHeader("Access-Control-Allow-Headers",
+				"ACCEPT, ORIGIN, X-REQUESTED-WITH, CONTENT-TYPE");
 	}
-	
+
 	private void setJsonpHeaders(HttpServletResponse resp) {
 		resp.setHeader("Content-Type", "text/javascript");
 		resp.setHeader("Cache-Control", "no-cache");
 		resp.setHeader("Pragma", "no-cache");
+	}
+
+	private String getType(HttpServletRequest req) {
+		final String pathInfo = req.getPathInfo();
+		if (pathInfo == null || pathInfo.length() == 0) {
+			return "customer";
+		}
+		String parameterString = pathInfo;
+		if (parameterString.startsWith("/")) {
+			parameterString = parameterString.substring(1);
+		}
+		logger.info("Parsing incoming string: " + parameterString);
+		String[] split = parameterString.split("/");
+		if (split.length == 0) {
+			return "customer";
+		}
+		if (split[0].equalsIgnoreCase("mortgage")) {
+			return "mortgage";
+		}
+		return "customer";
 	}
 
 	private Customer parseCustomer(HttpServletRequest req) {
@@ -153,6 +189,7 @@ public class CustomerRestEndpoint extends HttpServlet {
 			String callback) {
 		passResult(resp, payload, callback, true);
 	}
+
 	private <T> void passResult(HttpServletResponse resp, Object payload,
 			String callback, boolean success) {
 		try {
@@ -161,7 +198,7 @@ public class CustomerRestEndpoint extends HttpServlet {
 			result.success = success;
 			String json = mapper.writeValueAsString(result);
 			if (callback != null) {
-				json = callback+"(" + json + ");";
+				json = callback + "(" + json + ");";
 			}
 			logger.info("Result: " + json);
 			resp.setHeader("Content-Type", "application/json");

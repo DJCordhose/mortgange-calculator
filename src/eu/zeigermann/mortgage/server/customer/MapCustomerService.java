@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import eu.zeigermann.mortgage.server.MortgageData;
+
 @SuppressWarnings("all")
 public class MapCustomerService implements CustomerService {
 	private static Map<Integer, Customer> customers = new ConcurrentHashMap<Integer, Customer>();
@@ -29,5 +31,11 @@ public class MapCustomerService implements CustomerService {
 	@Override
 	public Customer get(int id) {
 		return customers.get(id);
+	}
+
+	@Override
+	public void save(MortgageData mortgage) {
+		Customer customer = get(mortgage.customerId);
+		customer.mortgages.add(mortgage);
 	}
 }

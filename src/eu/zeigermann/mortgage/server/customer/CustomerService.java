@@ -2,6 +2,8 @@ package eu.zeigermann.mortgage.server.customer;
 
 import java.util.Collection;
 
+import eu.zeigermann.mortgage.server.MortgageData;
+
 public interface CustomerService {
 
 	public Customer get(int id);
@@ -10,6 +12,8 @@ public interface CustomerService {
 
 	public void save(Customer customer);
 
+	public void save(MortgageData mortgage);
+	
 	public void delete(Customer customer);
 
 }
