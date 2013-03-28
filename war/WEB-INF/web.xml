@@ -9,6 +9,14 @@
 		<servlet-name>CustomerRestEndpoint</servlet-name>
 		<url-pattern>/customer/*</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>MortgageRestEndpoint</servlet-name>
+		<servlet-class>eu.zeigermann.mortgage.server.mortgage.MortgageRestEndpoint</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>MortgageRestEndpoint</servlet-name>
+		<url-pattern>/mortgage/*</url-pattern>
+	</servlet-mapping>
 	
   <servlet>
     <servlet-name>rest</servlet-name>
@@ -45,6 +53,16 @@
    <web-resource-collection>
       <web-resource-name>Service</web-resource-name>
       <url-pattern>/customer*</url-pattern>
+      <http-method>DELETE</http-method>
+      <http-method>PUT</http-method>
+      <http-method>HEAD</http-method>
+      <http-method>OPTIONS</http-method>
+      <http-method>GET</http-method>
+      <http-method>POST</http-method>
+   </web-resource-collection>
+   <web-resource-collection>
+      <web-resource-name>Service</web-resource-name>
+      <url-pattern>/mortgage*</url-pattern>
       <http-method>DELETE</http-method>
       <http-method>PUT</http-method>
       <http-method>HEAD</http-method>
