@@ -163,6 +163,7 @@ public class MortgageRestEndpoint extends HttpServlet {
 			}
 			logger.info("Result: " + json);
 			resp.setHeader("Content-Type", "application/json");
+			resp.setCharacterEncoding("UTF-8");
 			resp.getWriter().write(json);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
