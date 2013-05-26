@@ -115,7 +115,7 @@ public class MortgageRestEndpoint extends HttpServlet {
 		// allow for cross site origin
 		resp.setHeader("Access-Control-Allow-Origin", "*");
 		resp.setHeader("Access-Control-Allow-Methods",
-				"POST, GET, PUT, DELETE, OPTIONS");
+				"HEAD, POST, GET, PUT, DELETE, OPTIONS");
 		resp.setHeader("Access-Control-Allow-Headers",
 				"ACCEPT, ORIGIN, X-REQUESTED-WITH, CONTENT-TYPE");
 	}
